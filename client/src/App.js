@@ -3,10 +3,14 @@ import React, { useState } from 'react';
 import './App.css';
 import { Router, Link } from '@reach/router';
 import { Container, Divider } from '@material-ui/core';
+import { Card, CardTitle, CardText, Button } from 'reactstrap';
 
 //==   C O M P O N E N T S   ==||
-import Map from './components/Map';
-import Map2 from './components/Map2';
+import MainMap from './components/MainMap';
+import LeafMap from './components/LeafMap';
+import ReactLeafMap from './components/ReactLeafMap';
+import TestMap from './components/TestMap';
+import MapBox from './components/MapBox';
 
 function App() {
 
@@ -35,18 +39,27 @@ function App() {
         <Divider/>
       </Container>
       
-      <Container>
-        <Map markerPosition={markerPosition}/>
+      {/* <Container>
+        <LeafMap markerPosition={markerPosition}/>
       </Container>
 
       <div>
         Current markerPosition: lat: {lat}, lng: {lng}
       </div>
-      <button onClick={moveMarker}>Move marker</button>
-      
+      <button onClick={moveMarker}>Move marker</button> */}
+
+      {/* <Container>
+        <ReactLeafMap />
+      </Container> */}
+
+      {/* <Container>
+        <TestMap />
+      </Container> */}
+
       <Container>
-        <Map2 />
+        <MapBox />
       </Container>
+
 
 
       <Router>

@@ -1,40 +1,11 @@
-.App {
-  text-align: center;
+body {
+  margin: 0px;
+  width: 100vw;
+  height: 100vh;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
-
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+#root {
+  height: 100%;
 }
 
 .leaflet-container {
@@ -42,6 +13,50 @@
   height: 400px;
 }
 
-body {
-  margin: 0px;
+.card {
+  z-index: 999;
+  position: absolute;
+  top: 2%;
+  left: 74%;
+  width: 200px;
 }
+
+
+/* MAPBOX */
+.mapContainer {
+  width: 100%;
+  height: 600px;
+}
+
+.sidebarStyle {
+  display: inline-block;
+  position: absolute;
+  top: 76px;
+  left: 40px;
+  margin: 12px;
+  background-color: #404040;
+  color: #ffffff;
+  z-index: 1 !important;
+  padding: 6px;
+  font-weight: bold;
+  border-radius: 3px;
+  opacity: .75
+  }
+
+  .distance-container {
+    position: absolute;
+    top: 130px;
+    left: 52px;
+    z-index: 1;
+    }
+
+  .distance-container > * {
+  background-color: rgba(0, 0, 0, 0.5);
+  color: #fff;
+  font-size: 11px;
+  line-height: 18px;
+  display: block;
+  margin: 0;
+  padding: 5px 10px;
+  border-radius: 3px;
+  }

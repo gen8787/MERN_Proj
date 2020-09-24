@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import L from "leaflet";
 import LeafletMap from 'react-leaflet';
 
-const Map = ({markerPosition}) => {
+const MainMap = ({markerPosition}) => {
 
 //==   S T A T E   ==||
 
@@ -49,4 +49,4 @@ const Map = ({markerPosition}) => {
     )
 }
 
-export default Map;
+export default MainMap;
