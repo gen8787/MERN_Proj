@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import mapboxgl, { Popup } from 'mapbox-gl';
 import length from '@turf/length';
 import { Container, Paper, TableContainer, Table, TableBody, TableCell, TableHead, TableRow, TableFoot} from '@material-ui/core';
+import axios from 'axios';
 
 mapboxgl.accessToken = 'pk.eyJ1IjoiZ2VuODc4NyIsImEiOiJja2Q2bXA4cHMxYXN0MndrY2E1aHg1dWM4In0.4b6zrIoo4plHMfwHEAgA5w';
 
@@ -28,9 +29,28 @@ const MapBox = () => {
     function munterCalc(dist, elev, rate) {
         // time = (dist(KM) + (elev(M)/100)) / rate
         let retTime = ((dist * 1.609344) + (elev/100)) / rate
-        setTotalTime(totalTime + retTime);
+        // setTotalTime(totalTime + retTime);
         return retTime * 60;
     }
+
+    useEffect(() => {
+        axios.get('https://api.mapbox.com/v4/mapbox.mapbox-terrain-v2/tilequery/' + lng + ',' + lat + '.json?layers=contour&limit=50&access_token=' + mapboxgl.accessToken)
+            .then(res => {
+                let allFeatures = res.data.features;
+                let allElevations = [];
+                for (let i = 0; i < allFeatures.length; i ++) {
+                    allElevations.push(allFeatures[i].properties.ele)
+                }
+                console.log(allElevations);
+                let highestElevation = Math.max(...allElevations);
+                console.log(highestElevation);
+            })
+            .catch(err => console.log(err))
+    }, []);
+
+
+    function getElevation() {
+    };
 
 //==   U S E   E F F E C T   ==||
     useEffect(() => {
