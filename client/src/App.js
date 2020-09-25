@@ -11,6 +11,7 @@ import LeafMap from './components/LeafMap';
 import ReactLeafMap from './components/ReactLeafMap';
 import TestMap from './components/TestMap';
 import MapBox from './components/MapBox';
+import DragBox from './components/DragBox';
 
 function App() {
 
@@ -60,7 +61,7 @@ function App() {
         <MapBox />
       </Container>
 
-
+      <DragBox />
 
       <Router>
       </Router>

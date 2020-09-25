@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import mapboxgl, { Popup } from 'mapbox-gl';
 import length from '@turf/length';
+import { Container, Paper, TableContainer, Table, TableBody, TableCell, TableHead, TableRow, TableFoot} from '@material-ui/core';
 
 mapboxgl.accessToken = 'pk.eyJ1IjoiZ2VuODc4NyIsImEiOiJja2Q2bXA4cHMxYXN0MndrY2E1aHg1dWM4In0.4b6zrIoo4plHMfwHEAgA5w';
 
@@ -12,6 +13,24 @@ const MapBox = () => {
     const [lat, setLat] = useState(46.8427);
     const [lng, setLng] = useState(-121.7382);
     const [zoom, setZoom] = useState(13);
+
+    const [points, setPoints] = useState([]);
+    const [lines, setLines] = useState([]);
+    const [totalDist, setTotalDist] = useState(0);
+    const [munterRate, setMunterRate] = useState(0);
+    const [totalTime, setTotalTime] = useState(0);
+
+    const [mouseLoc, setMouseLoc] = useState({
+        lngPt: 0,
+        latPt: 0
+    });
+
+    function munterCalc(dist, elev, rate) {
+        // time = (dist(KM) + (elev(M)/100)) / rate
+        let retTime = ((dist * 1.609344) + (elev/100)) / rate
+        setTotalTime(totalTime + retTime);
+        return retTime * 60;
+    }
 
 //==   U S E   E F F E C T   ==||
     useEffect(() => {
@@ -35,7 +54,7 @@ const MapBox = () => {
             }));
 
 //==   M A P   M O V E   ==||
-        map.on('move', () => {
+        map.on('move', (e) => {
             setLat(map.getCenter().lat.toFixed(4));
             setLng(map.getCenter().lng.toFixed(4));
             setZoom(map.getZoom().toFixed(2));
@@ -110,6 +129,7 @@ const MapBox = () => {
             // If a feature was clicked, remove it from the map
             if (features.length) {
                 var id = features[0].properties.id;
+                lines.pop();
                 geojson.features = geojson.features.filter(function (point) {
                     return point.properties.id !== id;
                 });
@@ -127,6 +147,10 @@ const MapBox = () => {
                 };
 
                 geojson.features.push(point);
+                points.push({
+                    'lngPt': point.geometry.coordinates[0],
+                    'latPt': point.geometry.coordinates[1]
+                })
             }
 
             if (geojson.features.length > 1) {
@@ -137,22 +161,26 @@ const MapBox = () => {
                 );
 
                 geojson.features.push(linestring);
+                let newLine = length(linestring, {units: 'miles'});
+                newLine.toFixed(2)
+                lines.push(newLine);                
 
                 // Populate the distanceContainer with total distance
                 var value = document.createElement('pre');
                 value.textContent =
                     'Total distance: ' +
-                    length(linestring, {units: 'miles'}).toLocaleString(2) +
+                    length(linestring, {units: 'miles'}).toLocaleString() +
                     'mi';
                 distanceContainer.appendChild(value);
+                setTotalDist(length(linestring, {units: 'miles'}));
             }
 
             map.getSource('geojson').setData(geojson);
         });
-        
 
-//==   M A P   O N   C L I C K   ==||
+//==   M A P   O N   M O V E   ==||
         map.on('mousemove', function (e) {
+            setMouseLoc({lng: e.lngLat.lng.toFixed(4), lat: e.lngLat.lat.toFixed(4)});
             var features = map.queryRenderedFeatures(e.point, {
                 layers: ['measure-points']
             });
@@ -166,16 +194,65 @@ const MapBox = () => {
         return () => map.remove();
     }, []);
 
-//==   R E T U R N   ==||
+    //==   R E T U R N   ==||
     return (
         <div>
             <div className='sidebarStyle'>
-                Longitude: {lng} | Latitude: {lat} | Zoom: {zoom}
+                Center: Lng: {lng} | Lat: {lat} | Zoom: {zoom} || Cursor: Lng: {mouseLoc.lng} | Lat: {mouseLoc.lat}
             </div>
 
             <div id="distance" className="distance-container"></div>
 
             <div id="mapContainerRef" className='mapContainer' ref={mapContainerRef} />
+
+            <div className="pt-3">
+                Munter Rate: <input type="number" name="munterRate" onChange={ (e) => setMunterRate(e.target.value)}/>
+                <small> Ex: Uphill = 4, Flat = 6, Downhill = 8</small>
+            </div>
+
+            <hr/>
+
+            <TableContainer>
+            <Table aria-label="">
+                <TableHead>
+                    <TableRow>
+                        <TableCell className="font-weight-bold">Leg</TableCell>
+                        <TableCell className="font-weight-bold">Distance (mi)</TableCell>
+                        <TableCell className="font-weight-bold">Vertical (ft)</TableCell>
+                        <TableCell className="font-weight-bold">Est. Time</TableCell>
+                    </TableRow>
+                </TableHead>
+
+                <TableBody>
+                {
+                    lines.map((line, i) => 
+                        <TableRow key={i+1}>
+                            <TableCell>{i} - {i + 1}</TableCell>
+                            {
+                                (i == 0) ? <TableCell>{ line }</TableCell>
+                                : <TableCell>{ line - lines[i-1] }</TableCell>
+                            }
+                            <TableCell>Vert</TableCell>
+                            {
+                                (i == 0) ? <TableCell>{munterCalc(line, 0, 4)}</TableCell>
+                                : <TableCell>{munterCalc(line-lines[i-1], 0, 4)}</TableCell>
+                            }
+                        </TableRow>
+                    )
+                }
+
+                <TableRow>
+                    <TableCell></TableCell>
+                    <TableCell></TableCell>
+                    <TableCell className="font-weight-bold">Total Dist: {totalDist} mi.</TableCell>
+                    <TableCell className="font-weight-bold">Total Est. Time: </TableCell>
+                </TableRow>
+
+                </TableBody>
+            </Table>
+        </TableContainer>
+
+
         </div>
     );
 };
