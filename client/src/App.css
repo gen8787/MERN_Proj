@@ -29,7 +29,7 @@ body {
   height: 600px;
 }
 
-.sidebarStyle {
+.sidebarStyle1 {
   display: inline-block;
   position: absolute;
   top: 76px;
@@ -44,9 +44,24 @@ body {
   opacity: .75
   }
 
+  .sidebarStyle2 {
+    display: inline-block;
+    position: absolute;
+    top: 116px;
+    left: 40px;
+    margin: 12px;
+    background-color: #404040;
+    color: #ffffff;
+    z-index: 1 !important;
+    padding: 6px;
+    font-weight: bold;
+    border-radius: 3px;
+    opacity: .75
+    }
+
   .distance-container {
     position: absolute;
-    top: 130px;
+    top: 168px;
     left: 52px;
     z-index: 1;
     }

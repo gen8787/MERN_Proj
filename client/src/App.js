@@ -47,8 +47,8 @@ function App() {
         Current markerPosition: lat: {lat}, lng: {lng}
       </div>
       <button onClick={moveMarker}>Move marker</button> */}
-
-      {/* <Container>
+{/* 
+      <Container>
         <ReactLeafMap />
       </Container> */}
 
